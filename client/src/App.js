@@ -137,6 +137,7 @@ const WModalFooter = styled(ModalFooter)`
     }
   }
 `;
+
 function App() {
   const [connectModalOpen, setConnectModalOpen] = useState(null);
   const [errorModalOpen, setErrorModalOpen] = useState(null);
@@ -241,6 +242,20 @@ function App() {
       if (!initialization) setIsKuError(true);
     }
   };
+
+  // persiste a conexão
+  useEffect(() => {
+    const connectorKey = window.localStorage.getItem(connectorLocalStorageKey);
+    if (connectorKey) {
+      const connector = getConnector(connectorKey);
+      if (connector) {
+        activate(connector).catch((err) => {
+          console.error("Erro ao reconectar com MetaMask:", err);
+        });
+      }
+    }
+  }, []);
+
   useEffect(() => {
     extensionKuSetup(true);
     saveKuwallet(null);
